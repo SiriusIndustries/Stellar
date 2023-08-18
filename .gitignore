@@ -1,0 +1,23 @@
+# Sources
+!src/*
+
+# Compilation & Execution
+target/
+*.class
+*.log
+*.jar
+*.war
+*.nar
+*.ear
+hs_err_pid*
+replay_pid*
+
+# IntelliJ IDEA
+.idea/
+.settings/
+**/*.iml
+
+# Eclipse
+.settings/
+.project
+.classpath

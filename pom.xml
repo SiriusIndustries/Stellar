@@ -1,0 +1,256 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>sirius.stellar</groupId>
+    <artifactId>stellar-aggregator</artifactId>
+    <version>1u1</version>
+
+    <packaging>pom</packaging>
+    <name>Stellar</name>
+    <description>A visionary application development framework.</description>
+	<url>https://stellar.sirius.cam</url>
+
+    <licenses>
+        <license>
+            <name>CC BY-NC 4.0</name>
+            <url>https://creativecommons.org/licenses/by-nc/4.0/</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Sirius Industries</name>
+        <url>https://sirius.cam</url>
+    </organization>
+
+    <modules>
+        <module>stellar.facility</module>
+
+        <module>stellar.logging</module>
+		<module>stellar.logging.bundle</module>
+
+		<module>stellar.logging.jboss</module>
+		<module>stellar.logging.jcl</module>
+		<module>stellar.logging.jsr379</module>
+		<module>stellar.logging.jul</module>
+		<module>stellar.logging.log4j</module>
+		<module>stellar.logging.log4j2</module>
+		<module>stellar.logging.minlog</module>
+		<module>stellar.logging.slf4j</module>
+		<module>stellar.logging.tinylog</module>
+    </modules>
+
+    <properties>
+		<project.root>${project.basedir}</project.root>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <java.version>20</java.version>
+		<groovy.version>4.0.13</groovy.version>
+        <spock.version>2.3-groovy-4.0</spock.version>
+		<bytebuddy.version>1.14.5</bytebuddy.version>
+        <avaje-inject.version>9.4</avaje-inject.version>
+        <avaje-http.version>1.46</avaje-http.version>
+
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+    </properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>24.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.groovy</groupId>
+			<artifactId>groovy</artifactId>
+			<version>${groovy.version}</version>
+			<scope>test</scope>
+		</dependency>
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-core</artifactId>
+            <version>${spock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy-dep</artifactId>
+            <version>${bytebuddy.version}</version>
+            <scope>test</scope>
+        </dependency>
+	</dependencies>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Central Repository</name>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>sonatype</id>
+            <name>Sonatype Repository</name>
+            <url>https://oss.sonatype.org/content/repositories/releases/</url>
+        </repository>
+        <repository>
+            <id>jitpack</id>
+            <name>JitPack Repository</name>
+            <url>https://jitpack.io</url>
+        </repository>
+		<repository>
+			<id>depot</id>
+			<name>Stellar Depot</name>
+			<url>file://${project.root}/stellar.depot/</url>
+		</repository>
+    </repositories>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+				<plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.3.0</version>
+
+                    <configuration>
+                        <forceCreation>true</forceCreation>
+                        <skipIfEmpty>true</skipIfEmpty>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+
+                    <configuration>
+                        <release>${maven.compiler.release}</release>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+
+                        <compilerArgs>
+                            <compilerArg>--enable-preview</compilerArg>
+                        </compilerArgs>
+                    </configuration>
+
+					<executions>
+						<execution>
+							<phase>compile</phase>
+							<goals>
+								<goal>compile</goal>
+							</goals>
+						</execution>
+					</executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.3.0</version>
+
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.5.0</version>
+
+                    <configuration>
+                        <quiet>true</quiet>
+                        <verbose>false</verbose>
+                        <failOnError>true</failOnError>
+						<doclint>all,-missing</doclint>
+
+						<additionalOptions>
+                            <additionalOption>--enable-preview</additionalOption>
+                        </additionalOptions>
+                    </configuration>
+
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>javadoc</goal>
+							</goals>
+						</execution>
+					</executions>
+                </plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>3.1.2</version>
+
+					<configuration>
+						<includes>
+							<include>**/*Specification.class</include>
+							<include>**/*Test.class</include>
+						</includes>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.codehaus.gmavenplus</groupId>
+					<artifactId>gmavenplus-plugin</artifactId>
+					<version>3.0.0</version>
+
+					<executions>
+						<execution>
+							<goals>
+								<goal>addTestSources</goal>
+								<goal>compileTests</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>3.4.0</version>
+
+					<executions>
+						<execution>
+							<id>add-test-source</id>
+							<phase>generate-test-sources</phase>
+
+							<goals>
+								<goal>add-test-source</goal>
+							</goals>
+
+							<configuration>
+								<sources>
+									<source>src/test/groovy</source>
+								</sources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.simplify4u.plugins</groupId>
+					<artifactId>sign-maven-plugin</artifactId>
+					<version>1.0.1</version>
+
+					<executions>
+						<execution>
+							<goals>
+								<goal>sign</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
