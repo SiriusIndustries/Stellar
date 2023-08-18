@@ -1,6 +1,9 @@
 # Sources
 !src/*
 
+# Depot
+!stellar.depot/*
+
 # Compilation & Execution
 target/
 *.class
