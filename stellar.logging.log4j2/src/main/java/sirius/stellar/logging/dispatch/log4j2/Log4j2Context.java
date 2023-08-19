@@ -26,26 +26,34 @@ public final class Log4j2Context implements org.apache.logging.log4j.spi.LoggerC
 
 	@Override
 	public org.apache.logging.log4j.spi.ExtendedLogger getLogger(String name) {
-		return new Log4j2Dispatcher(name);
+		Log4j2Dispatcher logger = new Log4j2Dispatcher(name);
+		loggers.add(logger);
+		return logger;
 	}
 
 	@Override
 	public org.apache.logging.log4j.spi.ExtendedLogger getLogger(String name, org.apache.logging.log4j.message.MessageFactory factory) {
-		return new Log4j2Dispatcher(name, factory);
+		Log4j2Dispatcher logger = new Log4j2Dispatcher(name, factory);
+		loggers.add(logger);
+		return logger;
 	}
 
 	@Override
 	public boolean hasLogger(String name) {
-		return false;
+		return this.loggers.stream().anyMatch(logger -> logger.getName().equalsIgnoreCase(name));
 	}
 
 	@Override
 	public boolean hasLogger(String name, Class<? extends org.apache.logging.log4j.message.MessageFactory> messageFactoryClass) {
-		return false;
+		return this.loggers.stream()
+				.filter(logger -> logger.getName().equalsIgnoreCase(name))
+				.anyMatch(logger -> logger.getMessageFactory().getClass().equals(messageFactoryClass));
 	}
 
 	@Override
 	public boolean hasLogger(String name, org.apache.logging.log4j.message.MessageFactory messageFactory) {
-		return false;
+		return this.loggers.stream()
+				.filter(logger -> logger.getName().equalsIgnoreCase(name))
+				.anyMatch(logger -> logger.getMessageFactory().equals(messageFactory));
 	}
 }

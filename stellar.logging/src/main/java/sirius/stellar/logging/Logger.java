@@ -108,10 +108,20 @@ public final class Logger {
 
 	/**
 	 * Dispatches a message.
+	 *
 	 * @param thread The name of the thread this message was dispatched from.
 	 * This should never be the identifier of the thread {@link Thread#threadId()}.
+	 *
 	 * @param name The original caller that caused this dispatch. This is retrieved
 	 * quickly with each call using {@link StackWalker#getCallerClass()}.
+	 *
+	 * @param arguments Arguments to use for string interpolation / formatting. This
+	 * invokes {@link Strings#format(String, Object...)}, essentially using both the
+	 * {@link java.text.MessageFormat} and {@link String#format} styles of formatting.
+	 * <p>
+	 * When making dispatchers, this should be avoided and the specific style of
+	 * interpolation used by the specific logger or facade that the dispatcher is to
+	 * delegate should be called instead, and this argument should be null.
 	 */
 	@Internal
 	public static void dispatch(Instant time, LoggerLevel level, String thread, String name, String text, Object... arguments) {

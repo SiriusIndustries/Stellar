@@ -8,9 +8,6 @@ import java.io.ObjectStreamException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Arrays;
-
-import static sirius.stellar.facility.Strings.*;
 
 /**
  * Implementation of {@link org.slf4j.Logger} which dispatches to {@link Logger}.

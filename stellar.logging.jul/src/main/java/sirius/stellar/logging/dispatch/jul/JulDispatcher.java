@@ -6,10 +6,8 @@ import sirius.stellar.logging.dispatch.Dispatcher;
 
 import java.io.ObjectStreamException;
 import java.io.Serial;
+import java.text.MessageFormat;
 import java.util.Map;
-import java.util.ServiceLoader;
-
-import static sirius.stellar.facility.Strings.*;
 
 /**
  * Implementation of {@link java.util.logging.Handler} which dispatches to {@link Logger}.
@@ -61,7 +59,7 @@ public final class JulDispatcher extends java.util.logging.Handler implements Di
 		if (original == null) return;
 		LoggerLevel level = conversions.get(original);
 		if (level == null) return;
-		Logger.dispatch(record.getInstant(), level, Thread.currentThread().getName(), record.getSourceClassName(), format(record.getMessage(), record.getParameters()));
+		Logger.dispatch(record.getInstant(), level, Thread.currentThread().getName(), record.getSourceClassName(), MessageFormat.format(record.getMessage(), record.getParameters()));
 	}
 
 	@Override
