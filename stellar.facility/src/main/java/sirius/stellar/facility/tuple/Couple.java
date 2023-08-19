@@ -160,9 +160,9 @@ public abstract class Couple<A, B> implements Map.Entry<A, B>, Orderable<Couple<
 
 	@Override
 	public String toString() {
-		if (this instanceof MutableCouple<A, B>) return format("MutableCouple({0}, {1})", this.first(), this.second());
-		if (this instanceof ImmutableCouple<A, B>) return format("ImmutableCouple({0}, {1})", this.first(), this.second());
-		return format("Couple({0}, {1})", this.first(), this.second());
+		if (this instanceof MutableCouple<A, B>) return format("MutableCouple[{0}, {1}]", this.first(), this.second());
+		if (this instanceof ImmutableCouple<A, B>) return format("ImmutableCouple[{0}, {1}]", this.first(), this.second());
+		return format("Couple[{0}, {1}]", this.first(), this.second());
 	}
 	//#endregion
 }

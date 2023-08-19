@@ -31,7 +31,7 @@ public record LoggerMessage(Instant time, LoggerLevel level, String thread, Stri
 
 	@Override
 	public String toString() {
-		return format("LoggerMessage({0,date,dd/MM/yyyy HH:mm:ss} | {1} | {2} | \"{3}\")", Date.from(this.time), this.level, this.name, this.text);
+		return format("LoggerMessage[{0,date,dd/MM/yyyy HH:mm:ss} | {1} | {2} | \"{3}\"]", Date.from(this.time), this.level, this.name, this.text);
 	}
 
 	@Override

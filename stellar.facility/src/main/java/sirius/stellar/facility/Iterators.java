@@ -1,8 +1,10 @@
 package sirius.stellar.facility;
 
+import sirius.stellar.facility.doctation.Experimental;
 import sirius.stellar.facility.doctation.Internal;
 
 import java.util.*;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static sirius.stellar.facility.Strings.*;
@@ -61,6 +63,12 @@ public class Iterators {
 		return new ArrayIterator<>(start, end, values);
 	}
 
+	// TODO - document and non-experimental this bull
+	@Experimental
+	public static <T> Iterators.Resettable<T> from(T seed, UnaryOperator<T> next) {
+		return new TraversalIterator<>(seed, next);
+	}
+
 	/**
 	 * Represents any iterator that can be brought back to an initial state, allowing for reuse.
 	 * This should be repeatable, i.e. {@link Resettable#reset()} should never throw an exception.
@@ -93,18 +101,20 @@ final class ArrayIterator<T> implements Iterators.Resettable<T> {
 		this.start = start;
 		this.end = end;
 		this.array = array;
+
+		this.index = start;
 	}
 
 	@Override
 	public boolean hasNext() {
 		if (this.array == null) return false;
-		return index < end;
+		return this.index <= this.end;
 	}
 
 	@Override
 	public T next() {
 		if (!hasNext()) throw new NoSuchElementException();
-		return array[index++];
+		return this.array[this.index++];
 	}
 
 	@Override
@@ -114,11 +124,64 @@ final class ArrayIterator<T> implements Iterators.Resettable<T> {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(Arrays.hashCode(array), start, end);
+		return Objects.hash(Arrays.hashCode(this.array), this.start, this.end);
 	}
 
 	@Override
 	public String toString() {
-		return format("ArrayIterator(array={0}, start={1}, end={2})", array, start, end);
+		return format("ArrayIterator[array={0}, start={1}, end={2}]", this.array, this.start, this.end);
+	}
+}
+
+/**
+ * An implementation of {@link Iterator} that obtains the next value dynamically.
+ */
+@Internal
+final class TraversalIterator<T> implements Iterators.Resettable<T> {
+
+	private T previous;
+	private boolean traversing;
+
+	private final T first;
+	private final UnaryOperator<T> operator;
+
+	TraversalIterator(T seed, UnaryOperator<T> operator) {
+		this.previous = seed;
+		this.traversing = false;
+
+		this.first = seed;
+		this.operator = operator;
+	}
+
+	@Override
+	public boolean hasNext() {
+		if (!this.traversing) return true;
+		return operator.apply(this.previous) != null;
+	}
+
+	@Override
+	public T next() {
+		if (!hasNext()) throw new NoSuchElementException();
+		if (!this.traversing) {
+			this.traversing = true;
+			return this.previous;
+		}
+		return operator.apply(this.previous);
+	}
+
+	@Override
+	public void reset() {
+		this.previous = this.first;
+		this.traversing = false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.first, this.operator);
+	}
+
+	@Override
+	public String toString() {
+		return format("TraversalIterator[previous={0}, traversing={1}, first={2}, operator={3}]", this.previous, this.traversing, this.first, this.operator);
 	}
 }

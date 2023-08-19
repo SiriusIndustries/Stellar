@@ -136,9 +136,9 @@ public abstract class Quartet<A, B, C, D> implements Orderable<Quartet<A, B, C, 
 
 	@Override
 	public String toString() {
-		if (this instanceof MutableQuartet<A, B, C, D>) return format("MutableQuartet({0}, {1}, {2}, {3})", this.first(), this.second(), this.third(), this.fourth());
-		if (this instanceof ImmutableQuartet<A, B, C, D>) return format("ImmutableQuartet({0}, {1}, {2}, {3})", this.first(), this.second(), this.third(), this.fourth());
-		return format("Quartet({0}, {1}, {2}, {3})", this.first(), this.second(), this.third(), this.fourth());
+		if (this instanceof MutableQuartet<A, B, C, D>) return format("MutableQuartet[{0}, {1}, {2}, {3}]", this.first(), this.second(), this.third(), this.fourth());
+		if (this instanceof ImmutableQuartet<A, B, C, D>) return format("ImmutableQuartet[{0}, {1}, {2}, {3}]", this.first(), this.second(), this.third(), this.fourth());
+		return format("Quartet[{0}, {1}, {2}, {3}]", this.first(), this.second(), this.third(), this.fourth());
 	}
 	//#endregion
 }

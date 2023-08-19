@@ -4,9 +4,7 @@ import org.jetbrains.annotations.Contract;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -65,7 +63,11 @@ public final class Throwables {
 	@Contract(value = "_ -> new", pure = true)
 	public static Stream<Throwable> stream(Throwable throwable) {
 		if (throwable == null) return Stream.empty();
-		return Stream.iterate(throwable, Objects::nonNull, Throwable::getCause);
+
+		Set<Throwable> processed = new HashSet<>();
+        processed.add(throwable);
+
+        return Stream.concat(Stream.of(throwable), Stream.iterate(throwable.getCause(), cause -> cause != null && !processed.contains(cause), Throwable::getCause));
 	}
 
 	/**

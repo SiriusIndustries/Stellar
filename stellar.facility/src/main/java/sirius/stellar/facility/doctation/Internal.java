@@ -29,7 +29,7 @@ import static java.lang.annotation.ElementType.*;
  * the public API, but shouldn't be accessed through, e.g., reflective access.
  * <p>
  * Even given a private class though, this annotation is suitable. Anything
- * which could easily, undesirably, become part of the public API should be
+ * that could easily, undesirably, become part of the public API should be
  * annotated with this in order to prevent this from happening.
  *
  * @since 1u1

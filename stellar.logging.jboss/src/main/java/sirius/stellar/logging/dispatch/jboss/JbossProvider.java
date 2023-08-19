@@ -1,7 +1,6 @@
 package sirius.stellar.logging.dispatch.jboss;
 
 import sirius.stellar.facility.Strings;
-import sirius.stellar.facility.doctation.Internal;
 
 import java.util.Deque;
 import java.util.Map;

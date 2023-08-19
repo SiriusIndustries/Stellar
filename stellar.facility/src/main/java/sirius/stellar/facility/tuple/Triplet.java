@@ -119,9 +119,9 @@ public abstract class Triplet<A, B, C> implements Orderable<Triplet<A, B, C>>, I
 
 	@Override
 	public String toString() {
-		if (this instanceof MutableTriplet<A, B, C>) return format("MutableTriplet({0}, {1}, {2})", this.first(), this.second(), this.third());
-		if (this instanceof ImmutableTriplet<A, B, C>) return format("ImmutableTriplet({0}, {1}, {2})", this.first(), this.second(), this.third());
-		return format("Triplet({0}, {1}, {2})", this.first(), this.second(), this.third());
+		if (this instanceof MutableTriplet<A, B, C>) return format("MutableTriplet[{0}, {1}, {2}]", this.first(), this.second(), this.third());
+		if (this instanceof ImmutableTriplet<A, B, C>) return format("ImmutableTriplet[{0}, {1}, {2}]", this.first(), this.second(), this.third());
+		return format("Triplet[{0}, {1}, {2}]", this.first(), this.second(), this.third());
 	}
 	//#endregion
 }

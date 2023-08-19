@@ -16,11 +16,11 @@ public class Priority {
 	public static final int DEBUG_INT = 10000;
 	public static final int ALL_INT = Integer.MIN_VALUE;
 
-	public static final Priority FATAL = new Level(FATAL_INT, "FATAL", 0);
-	public static final Priority ERROR = new Level(ERROR_INT, "ERROR", 3);
-	public static final Priority WARN = new Level(WARN_INT, "WARN", 4);
-	public static final Priority INFO = new Level(INFO_INT, "INFO", 6);
-	public static final Priority DEBUG = new Level(DEBUG_INT, "DEBUG", 7);
+	public static final Priority FATAL = LevelHolder.FATAL;
+	public static final Priority ERROR = LevelHolder.ERROR;
+	public static final Priority WARN = LevelHolder.WARN;
+	public static final Priority INFO = LevelHolder.INFO;
+	public static final Priority DEBUG = LevelHolder.DEBUG;
 
 	transient int level;
 	transient String levelStr;
@@ -85,5 +85,13 @@ public class Priority {
 
 	public static Priority toPriority(final String sArg, final Priority defaultPriority) {
 		return Level.toLevel(sArg, (Level) defaultPriority);
+	}
+
+	private static class LevelHolder {
+		private static final Priority FATAL = Level.FATAL;
+		private static final Priority ERROR = Level.ERROR;
+		private static final Priority WARN = Level.WARN;
+		private static final Priority INFO = Level.INFO;
+		private static final Priority DEBUG = Level.DEBUG;
 	}
 }

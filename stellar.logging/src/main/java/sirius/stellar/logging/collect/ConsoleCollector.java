@@ -76,7 +76,7 @@ final class ConsoleCollector implements Collector {
 
 	@Override
 	public String toString() {
-		return format("ConsoleCollector(stream = {0})", this.stream.toString());
+		return format("ConsoleCollector[stream={0}]", this.stream.toString());
 	}
 }
 

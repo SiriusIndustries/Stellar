@@ -86,7 +86,7 @@ public enum TerminalStyle {
 	STRIKETHROUGH(9),
 
 	/**
-	 * Double-underline (EMCA-48) but instead disables bold intensity on several
+	 * Double-underline (ECMA-48) but instead disables bold intensity on several
 	 * other platforms such as Linux &lt;4.17. Therefore, this is not widely supported.
 	 */
 	DOUBLE_UNDERLINE(21),
