@@ -2,9 +2,13 @@ package sirius.stellar.facility;
 
 import org.jetbrains.annotations.Contract;
 
+import java.security.SecureRandom;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Random;
+import java.util.random.RandomGenerator;
 
 /**
  * Provides a facility for modifying and examining {@link String}s.
@@ -95,5 +99,55 @@ public final class Strings {
 				.map(format -> format.format(arguments))
 				.map(message -> String.format(effectiveLocale, message, arguments))
 				.orElseThrow(IllegalStateException::new);
+	}
+
+	/**
+	 * Returns a shuffled string using the provided {@link Random} instance.
+	 * <p>
+	 * This method can be called with {@link SecureRandom} providing an alphabet string
+	 * in order to generate a secure random identifier. If a very secure random generator
+	 * is desired, {@link SecureRandom#getInstanceStrong()} can be used, however this is
+	 * not recommended as {@link SecureRandom#SecureRandom()} is usually strong enough for
+	 * most cases and this method could deplete the entropy pool of the operating system
+	 * (less likely to happen on newer systems) depending on how often the random instance
+	 * is used (how often this shuffle method is called), degrading quality/randomness.
+	 *
+	 * @see Strings#shuffle(RandomGenerator, char[])
+	 * @since 1u1
+	 */
+	@Contract(value = "!null, !null -> new; null, !null -> param2; _, null -> null", pure = true)
+	public static String shuffle(RandomGenerator random, String string) {
+		if (string == null) return null;
+		if (random == null) return string;
+
+		return new String(shuffle(random, string.toCharArray()));
+	}
+
+	/**
+	 * Returns a shuffled character array using the provided {@link Random} instance.
+	 * <p>
+	 * This method can be called with {@link SecureRandom} providing an alphabet array
+	 * in order to generate a secure random identifier. If a very secure random generator
+	 * is desired, {@link SecureRandom#getInstanceStrong()} can be used, however this is
+	 * not recommended as {@link SecureRandom#SecureRandom()} is usually strong enough for
+	 * most cases and this method could deplete the entropy pool of the operating system
+	 * (less likely to happen on newer systems) depending on how often the random instance
+	 * is used (how often this shuffle method is called), degrading quality/randomness.
+	 *
+	 * @see Strings#shuffle(RandomGenerator, String)
+	 * @since 1u1
+	 */
+	@Contract(value = "!null, _ -> new; null, _ -> param2;", pure = true)
+	public static char[] shuffle(RandomGenerator random, char[] characters) {
+		char[] finalCharacters = Arrays.copyOf(characters, characters.length);
+		if (random == null) return finalCharacters;
+		for (int i = finalCharacters.length - 1; i > 0; i--) {
+			int j = random.nextInt(i + 1);
+
+			char previous = finalCharacters[i];
+			finalCharacters[i] = finalCharacters[j];
+			finalCharacters[j] = previous;
+		}
+		return finalCharacters;
 	}
 }

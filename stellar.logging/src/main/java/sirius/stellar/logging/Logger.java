@@ -38,7 +38,7 @@ import static sirius.stellar.facility.Strings.*;
  * however, if a fixed number of total virtual threads is desired (which is generally an anti-pattern, as virtual threads
  * are extremely lightweight to create and the number of carrier threads is bound to the number of CPU cores available -
  * but this can be useful if you only want one logging thread, but you want a virtual thread so, if it blocks, other more
- * important business-logic threads can process instead), {@code newFixedThreadPool(1, Thread::startVirtualThread} can be
+ * important business-logic threads can process instead), {@code newFixedThreadPool(1, Thread::startVirtualThread)} can be
  * used to achieve that.
  * <p>
  * Otherwise, it is also a valid option to use any executor you might be sharing across the application for this purpose, and
@@ -62,7 +62,7 @@ public final class Logger {
 			ServiceLoader<Dispatcher.Provider> loader = ServiceLoader.load(Dispatcher.Provider.class);
 			for (Dispatcher.Provider provider : loader) provider.create().wire();
 		} catch (Throwable throwable) {
-			Logger.stacktrace(throwable);
+			Logger.stacktrace("Failed to wire dispatchers", throwable);
 		}
 	}
 
@@ -155,8 +155,13 @@ public final class Logger {
 	 * as issues can occur if the dependencies a collector might have are longer accepting calls.
 	 */
 	public static void close() {
-		for (Collector collector : collectors) collector.close();
-		executor.close();
+		try {
+			for (Collector collector : collectors) collector.close();
+			Collector.executor.close();
+			executor.close();
+		} catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
 	}
 
 	//#region enabled*

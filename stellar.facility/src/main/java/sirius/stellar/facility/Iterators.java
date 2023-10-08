@@ -1,6 +1,5 @@
 package sirius.stellar.facility;
 
-import sirius.stellar.facility.doctation.Experimental;
 import sirius.stellar.facility.doctation.Internal;
 
 import java.util.*;
@@ -63,8 +62,23 @@ public class Iterators {
 		return new ArrayIterator<>(start, end, values);
 	}
 
-	// TODO - document and non-experimental this bull
-	@Experimental
+	/**
+	 * Returns a traversal iterator starting with the provided seed.
+	 * <p>
+	 * The iterator provided only supports {@link Iterator#hasNext()} {@link Iterator#next()}, as well as
+	 * {@link Object#hashCode()} and {@link Object#toString()}. As it is an instance of {@link Resettable},
+	 * it can be reset to the initial starting position with {@link Resettable#reset()}.
+	 * <p>
+	 * It will always begin from the seed element, then continue to execute the unary operator to obtain
+	 * the next value when it is required. When {@link Iterator#hasNext()} is run, the stored previous value
+	 * is not changed, but the unary operator is executed; if the return value is not null, it returns true.
+	 * <p>
+	 * This behavior means that the provided unary operator must be executable, even when there are no more
+	 * values remaining - it should return null whenever the values have been exhausted. The seed element is
+	 * always preserved, meaning it is possible to reset back to the beginning of the iterator.
+	 *
+	 * @since 1u1
+	 */
 	public static <T> Iterators.Resettable<T> from(T seed, UnaryOperator<T> next) {
 		return new TraversalIterator<>(seed, next);
 	}

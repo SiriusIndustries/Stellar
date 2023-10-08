@@ -45,4 +45,25 @@ class IteratorsSpecification extends Specification {
 			iterator.reset()
 			iterator.next() == "second"
 	}
+
+	def "from(T, UnaryOperator) returns valid, resettable iterator"() {
+		given:
+			def random = new Random()
+			def seed = "abcdefghijklmnopqrstuvwxyz"
+		when:
+			def iterator = Iterators.from(seed, {
+				Strings.shuffle(random, it)
+			})
+			def a = iterator.next()
+			def b = iterator.next()
+		then:
+			iterator instanceof Iterators.Resettable
+			notThrown(NoSuchElementException)
+
+			a == seed
+			b != seed
+
+			iterator.reset()
+			iterator.next() == seed
+	}
 }

@@ -47,8 +47,8 @@ final class ConsoleCollector implements Collector {
 	 */
 	public static ConsoleCollector get() {
 		ConsoleCollector collector = new ConsoleCollector(System.out);
-		System.setOut(new StdStream(text -> Logger.dispatch(Instant.now(), LoggerLevel.INFORMATION, Thread.currentThread().getName(), "stdout", text)));
-		System.setErr(new StdStream(text -> Logger.dispatch(Instant.now(), LoggerLevel.ERROR, Thread.currentThread().getName(), "stderr", text)));
+		System.setOut(new DelegatePrintStream(text -> Logger.dispatch(Instant.now(), LoggerLevel.INFORMATION, Thread.currentThread().getName(), "stdout", text)));
+		System.setErr(new DelegatePrintStream(text -> Logger.dispatch(Instant.now(), LoggerLevel.ERROR, Thread.currentThread().getName(), "stderr", text)));
 		return collector;
 	}
 
@@ -90,20 +90,20 @@ final class ConsoleCollector implements Collector {
  * <p>
  * This implements {@link Serializable} - while it is not a semantic use of a {@link PrintStream} to serialize
  * the stream (and subsequently write a stream inside a stream), it is quite a common scenario for this to be
- * done on accident, and it is perfectly secure to serialize this object. Accidentally serializing this object
+ * done on accident, and it is perfectly secure to serializethis object. Accidentally serializing this object
  * can be done if, say, a logger object from logging facade that a dispatcher is available for is stored as an
  * instance variable - serializing the logger object could cause {@code System.out} or {@code System.err} to be
  * serialized and, potentially, subsequently, this class serialized.
  */
 @Internal
-final class StdStream extends PrintStream implements Serializable {
+final class DelegatePrintStream extends PrintStream implements  Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 163954357471100L;
 
 	private final Consumer<String> dispatcher;
 
-	StdStream(Consumer<String> dispatcher) {
+	DelegatePrintStream(Consumer<String> dispatcher) {
 		super(OutputStream.nullOutputStream());
 		this.dispatcher = dispatcher;
 	}

@@ -15,6 +15,21 @@ import static sirius.stellar.facility.Strings.*;
 
 /**
  * A tuple consisting of three elements.
+ * <p>
+ * Factory methods {@link Triplet#immutableTriplet} and {@link Triplet#mutableTriplet}
+ * are available to create instances of the appropriate subtype. They are designed to
+ * be imported statically to achieve a fluent interface.
+ * <p>
+ * A usage exemplar is as follows:
+ * <pre>{@code
+ *     // The `var` keyword can be used instead.
+ *     // var triplet = immutableTriplet("Random", 16, 2007);
+ *     Triplet<String, Integer, Integer> triplet = immutableTriplet("Random", 16, 2007);
+ *
+ *     triplet.first().equals("Random")
+ *     triplet.second() == 16;
+ *     triplet.third() == 2007;
+ * }</pre>
  *
  * @since 1u1
  * @author Mechite
@@ -130,7 +145,10 @@ public abstract class Triplet<A, B, C> implements Orderable<Triplet<A, B, C>>, I
  * A mutable implementation of {@link Triplet}.
  */
 @Internal
-class MutableTriplet<A, B, C> extends Triplet<A, B, C> {
+final class MutableTriplet<A, B, C> extends Triplet<A, B, C> {
+
+	@Serial
+	private static final long serialVersionUID = 4529072832431752049L;
 
 	private A first;
 	private B second;
@@ -183,7 +201,10 @@ class MutableTriplet<A, B, C> extends Triplet<A, B, C> {
  * An immutable implementation of {@link Triplet}.
  */
 @Internal
-class ImmutableTriplet<A, B, C> extends Triplet<A, B, C> {
+final class ImmutableTriplet<A, B, C> extends Triplet<A, B, C> {
+
+	@Serial
+	private static final long serialVersionUID = 4529072832431752049L;
 
 	private final A first;
 	private final B second;

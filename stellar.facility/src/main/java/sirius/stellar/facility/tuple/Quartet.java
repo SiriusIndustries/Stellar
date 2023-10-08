@@ -15,6 +15,27 @@ import static sirius.stellar.facility.Strings.*;
 
 /**
  * A tuple consisting of four elements.
+ * <p>
+ * Factory methods {@link Quartet#immutableQuartet} and {@link Quartet#mutableQuartet}
+ * are available to create instances of the appropriate subtype. They are designed to
+ * be imported statically to achieve a fluent interface.
+ * <p>
+ * A usage exemplar is as follows:
+ * <pre>{@code
+ *     // The `var` keyword can be used instead.
+ *     // var quartet = immutableQuartet("Random", 16, 2007, 175);
+ *     Quartet<String, Integer, Integer, Integer> quartet = immutableQuartet(
+ *         "Random",
+ *         16,
+ *         2007,
+ *         175
+ *     );
+ *
+ *     quartet.first().equals("Random")
+ *     quartet.second() == 16;
+ *     quartet.third() == 2007;
+ *     quartet.fourth() == 175;
+ * }</pre>
  *
  * @since 1u1
  * @author Mechite
@@ -147,7 +168,10 @@ public abstract class Quartet<A, B, C, D> implements Orderable<Quartet<A, B, C, 
  * A mutable implementation of {@link Quartet}.
  */
 @Internal
-class MutableQuartet<A, B, C, D> extends Quartet<A, B, C, D> {
+final class MutableQuartet<A, B, C, D> extends Quartet<A, B, C, D> {
+
+	@Serial
+	private static final long serialVersionUID = 267215234138977650L;
 
 	private A first;
 	private B second;
@@ -214,7 +238,10 @@ class MutableQuartet<A, B, C, D> extends Quartet<A, B, C, D> {
  * An immutable implementation of {@link Quartet}.
  */
 @Internal
-class ImmutableQuartet<A, B, C, D> extends Quartet<A, B, C, D> {
+final class ImmutableQuartet<A, B, C, D> extends Quartet<A, B, C, D> {
+
+	@Serial
+	private static final long serialVersionUID = 267215234138977650L;
 
 	private final A first;
 	private final B second;

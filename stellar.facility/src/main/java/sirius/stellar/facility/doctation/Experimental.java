@@ -19,7 +19,6 @@ import static java.lang.annotation.ElementType.*;
  * @author Mechite
  */
 @Documented @Inherited
-@Retention(RetentionPolicy.RUNTIME)
 @Target({
 		TYPE,
 		FIELD,

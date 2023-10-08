@@ -7,7 +7,7 @@
 
     <packaging>pom</packaging>
     <name>Stellar</name>
-    <description>A visionary application development framework.</description>
+    <description>Aggregator for the visionary application development framework.</description>
 	<url>https://stellar.sirius.cam</url>
 
     <licenses>
@@ -23,7 +23,8 @@
     </organization>
 
     <modules>
-        <module>stellar.facility</module>
+		<module>stellar.facility</module>
+		<module>stellar.jsr305</module>
 
         <module>stellar.logging</module>
 		<module>stellar.logging.bundle</module>
@@ -37,20 +38,21 @@
 		<module>stellar.logging.minlog</module>
 		<module>stellar.logging.slf4j</module>
 		<module>stellar.logging.tinylog</module>
+
+		<module>stellar.platform</module>
     </modules>
 
     <properties>
 		<project.root>${project.basedir}</project.root>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <java.version>20</java.version>
+        <java.version>21</java.version>
 		<groovy.version>4.0.13</groovy.version>
         <spock.version>2.3-groovy-4.0</spock.version>
 		<bytebuddy.version>1.14.5</bytebuddy.version>
         <avaje-inject.version>9.4</avaje-inject.version>
         <avaje-http.version>1.46</avaje-http.version>
 
-        <maven.compiler.release>${java.version}</maven.compiler.release>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
@@ -99,6 +101,11 @@
             <name>JitPack Repository</name>
             <url>https://jitpack.io</url>
         </repository>
+
+		<!--
+		TODO - Remove the depot and migrate to the next commons-logging release.
+		https://github.com/apache/commons-logging/pull/154#issuecomment-1685408026
+		-->
 		<repository>
 			<id>depot</id>
 			<name>Stellar Depot</name>
@@ -126,13 +133,8 @@
                     <version>3.11.0</version>
 
                     <configuration>
-                        <release>${maven.compiler.release}</release>
                         <source>${maven.compiler.source}</source>
                         <target>${maven.compiler.target}</target>
-
-                        <compilerArgs>
-                            <compilerArg>--enable-preview</compilerArg>
-                        </compilerArgs>
                     </configuration>
 
 					<executions>
@@ -170,10 +172,6 @@
                         <verbose>false</verbose>
                         <failOnError>true</failOnError>
 						<doclint>all,-missing</doclint>
-
-						<additionalOptions>
-                            <additionalOption>--enable-preview</additionalOption>
-                        </additionalOptions>
                     </configuration>
 
 					<executions>
@@ -212,6 +210,10 @@
 							</goals>
 						</execution>
 					</executions>
+
+					<configuration>
+						<skipBytecodeCheck>true</skipBytecodeCheck>
+					</configuration>
 				</plugin>
 
 				<plugin>

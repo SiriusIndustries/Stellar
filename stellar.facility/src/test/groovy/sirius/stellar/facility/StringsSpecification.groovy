@@ -94,4 +94,48 @@ class StringsSpecification extends Specification {
 			result == "Foobar costs 123.456,789"
 	}
 	//#endregion
+
+	//#region shuffle(Random, String)
+	def "shuffle(Random, String) correctly shuffles string"() {
+		given:
+			def random = new Random()
+			def alphabet = "abcdefghijklmnopqrstuvwxyz"
+		when:
+			def result = Strings.shuffle(random, alphabet)
+		then:
+			result != alphabet
+	}
+
+	def "shuffle(Random, String) with null random generator returns original string and doesn't throw NullPointerException"() {
+		given:
+			def string = "Hello, world!"
+		when:
+			def result = Strings.shuffle(null, string)
+		then:
+			result == string
+			notThrown(NullPointerException)
+	}
+	//#endregion
+
+	//#region shuffle(Random, char[])
+	def "shuffle(Random, char[]) correctly shuffles characters"() {
+		given:
+			def random = new Random()
+			def alphabet = "abcdefghijklmnopqrstuvwxyz".toCharArray()
+		when:
+			def result = Strings.shuffle(random, alphabet)
+		then:
+			result != alphabet
+	}
+
+	def "shuffle(Random, char[]) with null random generator returns original characters and doesn't throw NullPointerException"() {
+		given:
+			def characters = "Hello, world!".toCharArray()
+		when:
+			def result = Strings.shuffle(null, characters)
+		then:
+			result == characters
+			notThrown(NullPointerException)
+	}
+	//#endregion
 }

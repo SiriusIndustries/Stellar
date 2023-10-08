@@ -17,6 +17,24 @@ import static sirius.stellar.facility.Strings.*;
 
 /**
  * A tuple consisting of two elements (coupled together).
+ * <p>
+ * Factory methods {@link Couple#immutableCouple} and {@link Couple#mutableCouple}
+ * are available to create instances of the appropriate subtype. They are designed
+ * to be imported statically to achieve a fluent interface.
+ * <p>
+ * A usage exemplar is as follows:
+ * <pre>{@code
+ *     // The `var` keyword can be used instead.
+ *     // var couple = immutableCouple("Random", 16);
+ *     Couple<String, Integer> couple = immutableCouple("Random", 16);
+ *
+ *     couple.first().equals("Random")
+ *     couple.second() == 16;
+ *
+ *     // Couple conveniently implements Map.Entry as it contains just two elements.
+ *     couple.getKey().equals("Random");
+ *     couple.getValue() == 16;
+ * }</pre>
  *
  * @since 1u1
  * @author Mechite
@@ -171,7 +189,10 @@ public abstract class Couple<A, B> implements Map.Entry<A, B>, Orderable<Couple<
  * A mutable implementation of {@link Couple}.
  */
 @Internal
-class MutableCouple<A, B> extends Couple<A, B> {
+final class MutableCouple<A, B> extends Couple<A, B> {
+
+	@Serial
+	private static final long serialVersionUID = 2425620414811236114L;
 
 	private A first;
 	private B second;
@@ -210,7 +231,10 @@ class MutableCouple<A, B> extends Couple<A, B> {
  * An immutable implementation of {@link Couple}.
  */
 @Internal
-class ImmutableCouple<A, B> extends Couple<A, B> {
+final class ImmutableCouple<A, B> extends Couple<A, B> {
+
+	@Serial
+	private static final long serialVersionUID = 2425620414811236114L;
 
 	private final A first;
 	private final B second;
