@@ -19,9 +19,17 @@ jobs:
         java-version: '21'
         distribution: 'oracle'
         cache: maven
+
+    - name: Install Maven Daemon
+      id: install-mvnd
+      uses: ./.github/actions/install-mvnd
+      with:
+        version: '1.0-m7'
+        file-version-suffix: '-m40'
+        cache: 'true'
   
     - name: Build with Maven (package goal)
-      run: mvn -B package
+      run: ${{ steps.install-mvnd.outputs.mvnd-dir }}/mvnd -B package
 
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
