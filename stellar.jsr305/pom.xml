@@ -1,0 +1,70 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>sirius.stellar</groupId>
+        <artifactId>stellar-aggregator</artifactId>
+        <version>1u1</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <packaging>jar</packaging>
+    <artifactId>stellar-jsr305</artifactId>
+    <name>Stellar :: JSR305</name>
+	<description>Provides an implementation of JSR305 (javax.annotation) annotations to assist IDE auto-completion.</description>
+
+	<licenses>
+        <license>
+            <name>CC BY 2.5 DEED</name>
+            <url>https://creativecommons.org/licenses/by/2.5/</url>
+			<comments>
+				Copyright (c) 2005 Brian Goetz
+				Official home: https://www.jcip.net
+
+				Modifications were made.
+			</comments>
+		</license>
+    </licenses>
+
+	<properties>
+		<project.root>${project.basedir}/../</project.root>
+	</properties>
+
+    <build>
+        <plugins>
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.gmavenplus</groupId>
+				<artifactId>gmavenplus-plugin</artifactId>
+			</plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.simplify4u.plugins</groupId>
+				<artifactId>sign-maven-plugin</artifactId>
+			</plugin>
+        </plugins>
+    </build>
+</project>
