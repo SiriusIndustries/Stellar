@@ -109,8 +109,8 @@ public interface Collector extends AutoCloseable, Serializable {
 	 * runs {@link System#setOut(PrintStream)} and {@link System#setErr(PrintStream)}.
 	 * <p>
 	 * This essentially means that this not only provides a collector that collects
-	 * logs to {@link System#out}, but also it sets a dispatcher so that any later
-	 * calls to try and output to {@code stdout} will be redirected to logging.
+	 * logs to {@code stdout}, but also it sets a dispatcher so that any later calls
+	 * to try and output to {@code stdout} will be redirected to logging.
 	 *
 	 * @since 1u1
 	 */

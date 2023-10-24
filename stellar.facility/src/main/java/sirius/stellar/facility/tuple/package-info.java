@@ -15,5 +15,11 @@
  * @see sirius.stellar.facility.tuple.Sextet Sextet, holding six elements.
  * @see sirius.stellar.facility.tuple.Septet Septet, holding seven elements.
  * @see sirius.stellar.facility.tuple.Octet Octet, holding eight elements.
+ *
+ * @see sirius.stellar.facility
+ * @since 1u1
  */
+@Conforms
 package sirius.stellar.facility.tuple;
+
+import sirius.stellar.facility.doctation.Conforms;

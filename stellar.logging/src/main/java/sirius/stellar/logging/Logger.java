@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.ServiceLoader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static sirius.stellar.facility.Strings.*;
@@ -156,9 +157,15 @@ public final class Logger {
 	 */
 	public static void close() {
 		try {
-			for (Collector collector : collectors) collector.close();
-			Collector.executor.close();
+			executor.shutdown();
+			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 			executor.close();
+
+			for (Collector collector : collectors) collector.close();
+
+			Collector.executor.shutdown();
+			Collector.executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+			Collector.executor.close();
 		} catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}

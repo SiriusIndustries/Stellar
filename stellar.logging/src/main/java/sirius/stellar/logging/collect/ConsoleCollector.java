@@ -90,13 +90,13 @@ final class ConsoleCollector implements Collector {
  * <p>
  * This implements {@link Serializable} - while it is not a semantic use of a {@link PrintStream} to serialize
  * the stream (and subsequently write a stream inside a stream), it is quite a common scenario for this to be
- * done on accident, and it is perfectly secure to serializethis object. Accidentally serializing this object
+ * done on accident, and it is perfectly fine to serialize this object. Accidentally serializing this object
  * can be done if, say, a logger object from logging facade that a dispatcher is available for is stored as an
  * instance variable - serializing the logger object could cause {@code System.out} or {@code System.err} to be
  * serialized and, potentially, subsequently, this class serialized.
  */
 @Internal
-final class DelegatePrintStream extends PrintStream implements  Serializable {
+final class DelegatePrintStream extends PrintStream implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 163954357471100L;

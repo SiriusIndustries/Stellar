@@ -1,4 +1,4 @@
-module sirius.stellar.framework {
+module sirius.stellar.platform {
 
 	requires static org.jetbrains.annotations;
 
@@ -10,5 +10,5 @@ module sirius.stellar.framework {
 
 	requires java.management;
 
-	//	provides io.avaje.inject.spi.Module with sirius.stellar.framework.PlatformModule;
+	//	provides io.avaje.inject.spi.Module with sirius.stellar.platform.PlatformModule;
 }
