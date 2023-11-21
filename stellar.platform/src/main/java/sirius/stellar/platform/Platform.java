@@ -280,7 +280,7 @@ public final class Platform implements AutoCloseable, Serializable {
 	 *
 	 * @since 1u1
 	 */
-	// TODO - @Json.Property("upt")
+	@Json.Property("upt")
 	public Duration uptime() {
 		return Duration.ofMillis(scope().get(RuntimeMXBean.class).getUptime());
 	}

@@ -44,12 +44,12 @@
         <dependency>
             <groupId>io.avaje</groupId>
             <artifactId>avaje-jsonb</artifactId>
-            <version>1.7</version>
+            <version>1.9</version>
         </dependency>
         <dependency>
             <groupId>io.avaje</groupId>
             <artifactId>avaje-jsonb-jackson</artifactId>
-            <version>1.7</version>
+            <version>1.9</version>
         </dependency>
 
         <dependency>
