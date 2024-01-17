@@ -103,16 +103,6 @@
             <name>JitPack Repository</name>
             <url>https://jitpack.io</url>
         </repository>
-
-		<!--
-		TODO - Remove the depot and migrate to the next commons-logging release.
-		https://github.com/apache/commons-logging/pull/154#issuecomment-1685408026
-		-->
-		<repository>
-			<id>depot</id>
-			<name>Stellar Depot</name>
-			<url>file://${project.root}/stellar.depot/</url>
-		</repository>
     </repositories>
 
     <build>
