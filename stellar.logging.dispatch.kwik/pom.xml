@@ -27,7 +27,8 @@
 		<dependency>
 			<groupId>tech.kwik</groupId>
 			<artifactId>kwik</artifactId>
-			<version>0.8.13</version>
+			<version>0.10.6</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

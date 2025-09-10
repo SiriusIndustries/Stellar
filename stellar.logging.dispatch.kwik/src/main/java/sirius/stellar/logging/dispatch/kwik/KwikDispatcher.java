@@ -11,12 +11,12 @@ import java.util.concurrent.locks.ReentrantLock;
 import static sirius.stellar.facility.Throwables.*;
 
 /**
- * Implementation of {@link net.luminis.quic.log.Logger} which delegates to {@link Logger}.
+ * Implementation of {@link tech.kwik.core.log.Logger} which delegates to {@link Logger}.
  *
  * @since 1u1
  * @author Mechite
  */
-public final class KwikDispatcher extends net.luminis.quic.log.BaseLogger {
+public final class KwikDispatcher extends tech.kwik.core.log.BaseLogger {
 
 	private final Lock lock;
 
@@ -28,7 +28,7 @@ public final class KwikDispatcher extends net.luminis.quic.log.BaseLogger {
 	protected void log(String text) {
 		try {
 			this.lock.lock();
-			Logger.dispatch(Instant.now(), LoggerLevel.INFORMATION, Thread.currentThread().getName(), "net.luminis.quic", text);
+			Logger.dispatch(Instant.now(), LoggerLevel.INFORMATION, Thread.currentThread().getName(), "tech.kwik", text);
 		} finally {
 			this.lock.unlock();
 		}
@@ -39,7 +39,7 @@ public final class KwikDispatcher extends net.luminis.quic.log.BaseLogger {
 		try {
 			this.lock.lock();
 			if (throwable != null) text += "\n" + stacktrace(throwable);
-			Logger.dispatch(Instant.now(), LoggerLevel.INFORMATION, Thread.currentThread().getName(), "net.luminis.quic", text);
+			Logger.dispatch(Instant.now(), LoggerLevel.INFORMATION, Thread.currentThread().getName(), "tech.kwik", text);
 		} finally {
 			this.lock.unlock();
 		}
@@ -51,7 +51,7 @@ public final class KwikDispatcher extends net.luminis.quic.log.BaseLogger {
 			this.lock.lock();
 			text += "\n" + this.byteToHexBlock(data, length);
 
-			Logger.dispatch(Instant.now(), LoggerLevel.INFORMATION, Thread.currentThread().getName(), "net.luminis.quic", text);
+			Logger.dispatch(Instant.now(), LoggerLevel.INFORMATION, Thread.currentThread().getName(), "tech.kwik", text);
 		} finally {
 			this.lock.unlock();
 		}
@@ -63,7 +63,7 @@ public final class KwikDispatcher extends net.luminis.quic.log.BaseLogger {
 			this.lock.lock();
 			text += "\n" + this.byteToHexBlock(data, offset, length);
 
-			Logger.dispatch(Instant.now(), LoggerLevel.INFORMATION, Thread.currentThread().getName(), "net.luminis.quic", text);
+			Logger.dispatch(Instant.now(), LoggerLevel.INFORMATION, Thread.currentThread().getName(), "tech.kwik", text);
 		} finally {
 			this.lock.unlock();
 		}
