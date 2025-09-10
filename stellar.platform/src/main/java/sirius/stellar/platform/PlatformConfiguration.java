@@ -64,26 +64,3 @@ final class PlatformConfiguration extends Properties {
 		return configuration;
 	}
 }
-
-//@CustomAdapter
-//record PlatformConfigurationJsonAdapter(JsonAdapter<Map<Object, Object>> adapter) implements JsonAdapter<PlatformConfiguration> {
-//
-//	PlatformConfigurationJsonAdapter(Jsonb jsonb) {
-//      this(jsonb.adapter(mapOf(Object.class)));
-//    }
-//
-//	@Override
-//	public void toJson(JsonWriter writer, PlatformConfiguration value) {
-//		this.adapter.toJson(writer, value);
-//	}
-//
-//	@Override
-//	public PlatformConfiguration fromJson(JsonReader reader) {
-//		Map<Object, Object> map = this.adapter.fromJson(reader);
-//		if (map == null) return null;
-//
-//		PlatformConfiguration configuration = new PlatformConfiguration();
-//		configuration.putAll(map);
-//		return configuration;
-//	}
-//}
