@@ -1,14 +1,15 @@
 package sirius.stellar.platform;
 
 import io.avaje.inject.BeanScope;
-import io.avaje.inject.BeanScopeBuilder;
 import io.avaje.jsonb.Json;
 import org.jetbrains.annotations.Contract;
-import sirius.stellar.facility.Strings;
 import sirius.stellar.facility.concurrent.Latched;
+import sirius.stellar.facility.doctation.Internal;
+import sirius.stellar.facility.doctation.Nullable;
 import sirius.stellar.logging.Logger;
 import sirius.stellar.logging.collect.Collector;
 
+import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.lang.management.*;
@@ -21,8 +22,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.random.RandomGenerator;
+import java.util.stream.Collectors;
 
 import static java.lang.management.ManagementFactory.*;
+import static sirius.stellar.platform.PlatformConfiguration.*;
 
 /**
  * This class represents the central component of the framework facilitating
@@ -39,6 +42,25 @@ import static java.lang.management.ManagementFactory.*;
  * <p>
  * Here is a full list of provided beans in the inversion-of-control container:
  * <ul>
+ *     <li>
+ *         {@link Platform} - An instance of this class which can be used to
+ *         retrieve any global metadata about the current process, for example,
+ *         the startup time using {@link Platform#startup()}.
+ *     </li>
+ *     <li>
+ *         {@link Runtime} - Retrieved with {@link Runtime#getRuntime()}.
+ *     </li>
+ *     <li>
+ *         {@link ExecutorService} - A virtual thread executor service that is
+ *         created using {@link Executors#newVirtualThreadPerTaskExecutor()}.
+ *     </li>
+ *     <li>
+ *         {@link RandomGenerator} - {@link SecureRandom#SecureRandom()} is used
+ *         to create the provided instance (prioritizing randomness) - if this is
+ *         undesirable, a different instance could be provided in your own factory,
+ *         then that retrieved directly, instead of this abstract interface, in
+ *         order to use it.
+ *     </li>
  *     <li>
  *         Useful JMX beans, including:
  *         <ul>
@@ -62,22 +84,6 @@ import static java.lang.management.ManagementFactory.*;
  *             <li>{@link ThreadMXBean}</li>
  *         </ul>
  *     </li>
- *     <li>
- *         {@link ExecutorService} - {@link Executors#newVirtualThreadPerTaskExecutor()}
- *         is used to create the provided instance (it executes with virtual threads).
- *     </li>
- *     <li>
- *         {@link RandomGenerator} - {@link SecureRandom#SecureRandom()} is used to create
- *         the provided instance (prioritizing randomness over performance, as generation
- *         is an I/O operation) - if this is undesirable, a different instance could be
- *         provided in your own factory, then that specific instance retrieved directly
- *         instead of the abstract interface in order to use it.
- *     </li>
- *     <li>
- *         {@link Platform} - An instance of this class which can be used to retrieve any
- *         global metadata about the current process, e.g., {@link Platform#startup()}.
- *     </li>
- *     <li>{@link Runtime} - Retrieved with {@link Runtime#getRuntime()}.</li>
  * </ul>
  *
  * @since 1u1
@@ -110,8 +116,33 @@ public final class Platform implements AutoCloseable, Serializable {
 	private final Set<Platform> instances;
 
 	/**
-	 * Constructor used to instantiate the bean to insert it into the scope.
+	 * Constructor used for deserialization of externally loaded {@link Platform} instances.
 	 * This should never be called in a written application source directly.
+	 * <p>
+	 * This constructor takes every {@link Json.Property} annotated field as an argument,
+	 * however, does not pass through all the values directly to the fields, for obvious
+	 * reasons.
+	 * <p>
+	 * It also sets {@code null} values for every transient / {@link Json.Ignore}d field.
+	 */
+	@Internal
+	@Json.Creator
+	Platform(String identifier, Instant startup, Properties configuration, Set<Platform> instances) {
+		this.arguments = null;
+		this.hooks = null;
+
+		this.identifier = identifier;
+		this.startup = startup;
+		this.configuration = configuration;
+		this.instances = instances.stream()
+				.filter(instance -> !instance.equals(Platform.platform()))
+				.collect(Collectors.toUnmodifiableSet());
+	}
+
+	/**
+	 * Constructor used to instantiate the bean to insert it into the scope.
+	 * This should not need to be called in a written application source directly, unless
+	 * one is not using {@link Platform#main(String...)} to bootstrap their application.
 	 * <p>
 	 * This constructor will also populate the configuration object by loading potential
 	 * file candidates or default resource versions, as well as environment variables and
@@ -119,37 +150,36 @@ public final class Platform implements AutoCloseable, Serializable {
 	 * as demonstrated in the name shown first selects the files in lexicographical order,
 	 * and from the current working directory):
 	 * <ol>
-	 *     <li>*.properties</li>
-	 *     <li>*.env - These are parsed as properties files so may be incompatible with
-	 *     the full dotenv syntax.</li>
-	 *     <li>*.json - These are parsed with Avaje Jsonb into a {@code Map<String, String>}
-	 *     as other types are not supported here.</li>
-	 *     <li>*.yaml &amp; *.yml - These are parsed with SnakeYAML if present (an optional
-	 *     dependency) into a {@code Map<String, String>}. If SnakeYAML is not present, they
-	 *     will simply not be loaded.</li>
+	 *     <li>*.properties and *.env (both parsed with {@link Properties} as properties,
+	 *     which is a lenient parser, as properties has some features that env lacks such
+	 *     as colon rather than equals as key value separator, or exclamation points for
+	 *     comments - good practice would be to stick to what dotenv supports, or rename
+	 *     the file for future proofing)</li>
 	 *     <li>{@link System#getProperties() System Properties}</li>
 	 *     <li>{@link System#getenv() Environment Variables}</li>
 	 * </ol>
-	 * Everything listed here can have a default version defined by appending {@code .defc}
-	 * to the end of the extension, e.g., {@code .properties.defc} and putting it anywhere
-	 * in any JAR on the module path, or anywhere on the classpath. It will be copied into
-	 * the current working directory with the extension stripped unless a file already
-	 * exists there (done before anything is loaded).
+	 * Everything listed here can have a default version defined by appending {@code .$template}
+	 * to the end of the extension, e.g., {@code .properties.$template} and putting it anywhere
+	 * in any JAR on the module path, or anywhere on the classpath, and ensuring that the
+	 * generator is being used during compilation. It will be copied into the current working
+	 * directory with the extension stripped unless a file already exists there (done before
+	 * anything is loaded). The file names for each template must be kept unique.
 	 * <p>
-	 * Default configurations are useful in order to add comments to document the options
-	 * inside them as well as in order to simply provide a file, with default options set
-	 * so that the application will function without any configuration.
+	 * Default configurations are useful to add comments to document the options inside them
+	 * as well as to provide a file, with default options set so that the application will
+	 * be able to function without any configuration.
 	 * <p>
 	 * However, it should be noted that environment variables should always be preferred
 	 * over any other option, and will override any other option as they are loaded last.
 	 */
-	public Platform(String[] arguments, Instant startup) {
-		this.arguments = arguments;
+	public Platform(@Nullable String[] arguments, Instant startup) throws IOException {
+		this.arguments = arguments != null ? arguments : new String[0];
 		this.hooks = new ArrayList<>();
 
 		this.identifier = Instant.now().toEpochMilli() + "-" + UUID.randomUUID();
 		this.startup = startup;
-		this.configuration = new Properties();
+
+		this.configuration = loadConfiguration();
 		this.instances = new HashSet<>();
 	}
 
@@ -198,8 +228,8 @@ public final class Platform implements AutoCloseable, Serializable {
 	 * Remaining on the topic of potential side effects, this method allows for a small
 	 * amount of flexibility in the contract for the "arguments" parameter; not only is
 	 * it using a declaration with varargs, but it also can be provided as null (which
-	 * case it will simply be replaced with {@code new String[0]}), or contain null
-	 * values inside the array (which will be replaced with {@link Strings#EMPTY}).
+	 * case it will simply be replaced with {@code new String[0]}). It should not
+	 * contain null values within the array, however.
 	 * <p>
 	 * This functionality should not provide any benefit to applications conforming to
 	 * well-executed paradigms, but is beneficial to retrofit applications that may have
@@ -211,38 +241,14 @@ public final class Platform implements AutoCloseable, Serializable {
 	 * @see Platform#Platform(String[], Instant)
 	 * @since 1u1
 	 */
-	public static void main(String... arguments) {
+	public static void main(String... arguments) throws IOException {
 		Instant startup = Instant.ofEpochMilli(getRuntimeMXBean().getStartTime());
 		Logger.collector(Collector.console());
 
-		Platform platform = new Platform(arguments == null ? new String[0] : Arrays.stream(arguments)
-				.map(argument -> argument == null ? Strings.EMPTY : argument)
-				.toArray(String[]::new), startup);
-		Runtime runtime = Runtime.getRuntime();
-
-		BeanScopeBuilder builder = BeanScope.builder();
-		builder.shutdownHook(true);
-
-		builder.bean(ClassLoadingMXBean.class, getClassLoadingMXBean());
-		builder.bean(CompilationMXBean.class, getCompilationMXBean());
-
-		getGarbageCollectorMXBeans().forEach(bean -> builder.bean(GarbageCollectorMXBean.class, bean));
-
-		builder.bean(MemoryMXBean.class, getMemoryMXBean());
-		getMemoryManagerMXBeans().forEach(bean -> builder.bean(MemoryManagerMXBean.class, bean));
-		getMemoryPoolMXBeans().forEach(bean -> builder.bean(MemoryPoolMXBean.class, bean));
-
-		builder.bean(OperatingSystemMXBean.class, getOperatingSystemMXBean());
-		builder.bean(RuntimeMXBean.class, getRuntimeMXBean());
-		builder.bean(ThreadMXBean.class, getThreadMXBean());
-
-		builder.bean(ExecutorService.class, Executors.newVirtualThreadPerTaskExecutor());
-		builder.bean(RandomGenerator.class, new SecureRandom());
-
-		builder.bean(Platform.class, platform);
-		builder.bean(Runtime.class, runtime);
-
-		scope.set(builder.build());
+		scope.set(BeanScope.builder()
+				.bean(Platform.class, new Platform(arguments, startup))
+				.shutdownHook(true)
+				.build());
 		scope.release();
 
 		Runtime.getRuntime().addShutdownHook(new Thread(Logger::close));
@@ -259,6 +265,19 @@ public final class Platform implements AutoCloseable, Serializable {
 	}
 
 	/**
+	 * Returns the unique identifier of this platform bean.
+	 * <p>
+	 * Essentially, this allows you to uniquely identify and address a given node
+	 * within a large cluster. The identifier that is used is almost guaranteed to
+	 * be unique, as it is a timestamp prefixed {@link UUID}.
+	 *
+	 * @since 1u1
+	 */
+	public String identifier() {
+		return this.identifier;
+	}
+
+	/**
 	 * Returns when this platform bean was instantiated.
 	 * <p>
 	 * Essentially, this method allows you to return the time in which the process
@@ -269,6 +288,27 @@ public final class Platform implements AutoCloseable, Serializable {
 	 */
 	public Instant startup() {
 		return this.startup;
+	}
+
+	/**
+	 * Returns a {@link Properties} object that represents the configuration that
+	 * is held by this platform bean. This method is not computationally expensive.
+	 *
+	 * @since 1u1
+	 */
+	public Properties configuration() {
+		return this.configuration;
+	}
+
+	/**
+	 * Returns a set for all the {@link Platform} instances that the current one has
+	 * record of, which should all be alive. Instances are eventually removed from the
+	 * underlying set whenever they are not returning their heartbeat.
+	 *
+	 * @since 1u1
+	 */
+	public Set<Platform> instances() {
+		return this.instances;
 	}
 
 	/**
@@ -300,6 +340,7 @@ public final class Platform implements AutoCloseable, Serializable {
 	 *
 	 * @since 1u1
 	 */
+	@Contract("null -> fail; !null -> new")
 	public Duration uptime(Temporal temporal) {
 		return Duration.between(temporal, this.startup);
 	}
@@ -310,8 +351,8 @@ public final class Platform implements AutoCloseable, Serializable {
 	 * <p>
 	 * Essentially, this method allows you to safely add shutdown hooks that will not cause
 	 * logging to be negatively affected by a hook registered late, as it will run alongside
-	 * the {@link AutoCloseable#close()} method for any auto-closeable beans that are registered
-	 * inside the scope. A usage exemplar is as follows:
+	 * the {@link AutoCloseable#close()} method for any auto-closeable beans that are
+	 * registered inside the scope. A usage exemplar is as follows:
 	 * <pre>{@code
 	 *     platform.shutdownHook(scope -> {
 	 *         scope.get(Runtime.class).exec("echo Hello, world!");
@@ -320,9 +361,10 @@ public final class Platform implements AutoCloseable, Serializable {
 	 *
 	 * @since 1u1
 	 */
-	@Contract(value = "null -> fail; !null -> this", pure = true)
+	@Contract(value = "_ -> this")
 	public Platform shutdownHook(Consumer<BeanScope> hook) {
-		if (hook == null) throw new NullPointerException("Shutdown hook cannot be null");
+		if (this.hooks == null) throw new IllegalStateException("shutdownHook(Consumer) cannot be run against deserialized Platform instance");
+
 		this.hooks.add(hook);
 		return this;
 	}
@@ -330,6 +372,11 @@ public final class Platform implements AutoCloseable, Serializable {
 	@Override
 	public void close() {
 		for (Consumer<BeanScope> hook : this.hooks) hook.accept(Platform.scope());
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		return (object == this) || (object instanceof Platform platform) && (this.identifier.equalsIgnoreCase(platform.identifier));
 	}
 
 	/**

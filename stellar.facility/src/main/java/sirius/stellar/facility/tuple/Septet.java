@@ -15,6 +15,7 @@ import static sirius.stellar.facility.Strings.*;
 
 /**
  * A tuple consisting of seven elements.
+ * This class is non-sealed and may be extended for use as an abstraction.
  * <p>
  * Factory methods {@link Septet#immutableSeptet} and {@link Septet#mutableSeptet}
  * are available to create instances of the appropriate subtype. They are designed to

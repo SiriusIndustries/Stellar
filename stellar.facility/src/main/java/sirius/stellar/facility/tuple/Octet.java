@@ -15,6 +15,7 @@ import static sirius.stellar.facility.Strings.*;
 
 /**
  * A tuple consisting of eight elements.
+ * This class is non-sealed and may be extended for use as an abstraction.
  * <p>
  * Factory methods {@link Octet#immutableOctet} and {@link Octet#mutableOctet}
  * are available to create instances of the appropriate subtype. They are designed to

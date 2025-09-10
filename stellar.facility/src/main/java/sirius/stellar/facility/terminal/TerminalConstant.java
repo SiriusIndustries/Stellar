@@ -3,7 +3,7 @@ package sirius.stellar.facility.terminal;
 import sirius.stellar.facility.Strings;
 
 /**
- * Represents an ASCII constant that has an effect in a terminal environment.
+ * Represents an ANSI escape code that has an effect in a terminal environment.
  * <p>
  * This can be used with the {@link TerminalConstant#toString} method inside any given
  * string that is intended to be output to a terminal. For example, it could be used
@@ -24,9 +24,13 @@ import sirius.stellar.facility.Strings;
  */
 public final class TerminalConstant {
 
-	private final int code;
+	private final String code;
 
 	TerminalConstant(int code) {
+		this(Integer.toString(code));
+	}
+
+	TerminalConstant(String code) {
 		this.code = code;
 	}
 

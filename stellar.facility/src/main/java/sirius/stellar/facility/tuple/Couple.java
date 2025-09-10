@@ -17,6 +17,7 @@ import static sirius.stellar.facility.Strings.*;
 
 /**
  * A tuple consisting of two elements (coupled together).
+ * This class is non-sealed and may be extended for use as an abstraction.
  * <p>
  * Factory methods {@link Couple#immutableCouple} and {@link Couple#mutableCouple}
  * are available to create instances of the appropriate subtype. They are designed
@@ -55,12 +56,30 @@ public abstract class Couple<A, B> implements Map.Entry<A, B>, Orderable<Couple<
 	}
 
 	/**
+	 * Creates an immutable couple based on the provided {@link Map.Entry}.
+	 * @since 1u1
+	 */
+	@Contract("_ -> new")
+	public static <A, B> Couple<A, B> immutableCouple(Map.Entry<A, B> entry) {
+		return new ImmutableCouple<>(entry.getKey(), entry.getValue());
+	}
+
+	/**
 	 * Creates a mutable couple for two objects.
 	 * @since 1u1
 	 */
 	@Contract("_, _ -> new")
 	public static <A, B> Couple<A, B> mutableCouple(A first, B second) {
 		return new MutableCouple<>(first, second);
+	}
+
+	/**
+	 * Creates a mutable couple based on the provided {@link Map.Entry}.
+	 * @since 1u1
+	 */
+	@Contract("_ -> new")
+	public static <A, B> Couple<A, B> mutableCouple(Map.Entry<A, B> entry) {
+		return new MutableCouple<>(entry.getKey(), entry.getValue());
 	}
 	//#endregion
 

@@ -15,6 +15,7 @@ import static sirius.stellar.facility.Strings.*;
 
 /**
  * A tuple consisting of three elements.
+ * This class is non-sealed and may be extended for use as an abstraction.
  * <p>
  * Factory methods {@link Triplet#immutableTriplet} and {@link Triplet#mutableTriplet}
  * are available to create instances of the appropriate subtype. They are designed to

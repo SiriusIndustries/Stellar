@@ -4,7 +4,7 @@ import spock.lang.Specification
 
 class ThrowablesSpecification extends Specification {
 
-	//#region #forEach(Throwable)
+	//#region forEach(Throwable)
 	def "forEach(Throwable) correctly iterates over causes"() {
 		given:
 			def cause = new Throwable("A cause")
@@ -29,7 +29,7 @@ class ThrowablesSpecification extends Specification {
 	}
 	//#endregion
 
-	//#region #causes(Throwable)
+	//#region causes(Throwable)
 	def "causes(Throwable) correctly returns a list of causes"() {
 		given:
 			def cause = new Throwable("A cause")

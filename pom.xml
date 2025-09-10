@@ -35,6 +35,7 @@
 		<module>stellar.logging.dispatch.jcl</module>
 		<module>stellar.logging.dispatch.jsr379</module>
 		<module>stellar.logging.dispatch.jul</module>
+		<module>stellar.logging.dispatch.kwik</module>
 		<module>stellar.logging.dispatch.log4j</module>
 		<module>stellar.logging.dispatch.log4j2</module>
 		<module>stellar.logging.dispatch.minlog</module>
@@ -42,6 +43,7 @@
 		<module>stellar.logging.dispatch.tinylog</module>
 
 		<module>stellar.platform</module>
+		<module>stellar.platform.generator</module>
     </modules>
 
     <properties>
@@ -49,11 +51,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <java.version>21</java.version>
-		<groovy.version>4.0.13</groovy.version>
+		<groovy.version>4.0.21</groovy.version>
         <spock.version>2.3-groovy-4.0</spock.version>
-		<bytebuddy.version>1.14.5</bytebuddy.version>
-        <avaje-inject.version>9.4</avaje-inject.version>
-        <avaje-http.version>1.46</avaje-http.version>
+		<bytebuddy.version>1.14.17</bytebuddy.version>
+        <avaje-inject.version>11.4</avaje-inject.version>
+        <avaje-jsonb.version>3.3-RC1</avaje-jsonb.version>
 
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -63,7 +65,7 @@
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
-			<version>24.0.1</version>
+			<version>26.0.2</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -81,7 +83,7 @@
         </dependency>
         <dependency>
             <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy-dep</artifactId>
+            <artifactId>byte-buddy</artifactId>
             <version>${bytebuddy.version}</version>
             <scope>test</scope>
         </dependency>
@@ -209,7 +211,7 @@
 				<plugin>
 					<groupId>org.codehaus.gmavenplus</groupId>
 					<artifactId>gmavenplus-plugin</artifactId>
-					<version>3.0.0</version>
+					<version>3.0.2</version>
 
 					<executions>
 						<execution>

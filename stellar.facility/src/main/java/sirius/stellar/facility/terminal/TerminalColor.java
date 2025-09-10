@@ -7,7 +7,7 @@ package sirius.stellar.facility.terminal;
  * that support ANSI escape sequences.
  * <p>
  * This enumerator offers a "fluent" syntax for obtaining a {@link TerminalConstant} for any
- * given value in order to allow a large amount of customization to the output colors.
+ * given value to allow a large amount of customization to the output colors.
  * <p>
  * {@link TerminalColor#DEFAULT} is a special case in this enumerator as it does not differ
  * whether it is dark or bright, the output code is the same (the default color of the current
@@ -27,8 +27,8 @@ package sirius.stellar.facility.terminal;
  * }</pre>
  * <p>
  * The documentation for each constant inside of this file provides a trivial overview of what
- * each state of a given color is expected to look like, but it should be understood that the
- * actual display color will differ depending on the terminal that is being output to.
+ * each state of a given color is expected to look like. However, it should be understood that
+ * the actual display color will differ depending on the terminal that is being output to.
  *
  * @see TerminalColorScoped
  *
@@ -38,50 +38,50 @@ package sirius.stellar.facility.terminal;
 public enum TerminalColor {
 
 	/**
-	 * <p style="color: #000000">Dark</p>
-	 * <p style="color: #565758">Bright</p>
+	 * <b style="color: #000000">Dark</b>,
+	 * <b style="color: #565758">Bright</b>
 	 */
 	BLACK(new TerminalColorScoped(30, 90), new TerminalColorScoped(40, 100)),
 
 	/**
-	 * <p style="color: #E5504F">Dark</p>
-	 * <p style="color: #F54152">Bright</p>
+	 * <b style="color: #E5504F">Dark</b>,
+	 * <b style="color: #F54152">Bright</b>
 	 */
 	RED(new TerminalColorScoped(31, 91), new TerminalColorScoped(41, 101)),
 
 	/**
-	 * <p style="color: #58912F">Dark</p>
-	 * <p style="color: #4DBD19">Bright</p>
+	 * <b style="color: #58912F">Dark</b>,
+	 * <b style="color: #4DBD19">Bright</b>
 	 */
 	GREEN(new TerminalColorScoped(32, 92), new TerminalColorScoped(42, 102)),
 
 	/**
-	 * <p style="color: #A08712">Dark</p>
-	 * <p style="color: #DDBC0A">Bright</p>
+	 * <b style="color: #A08712">Dark</b>,
+	 * <b style="color: #DDBC0A">Bright</b>
 	 */
 	YELLOW(new TerminalColorScoped(33, 93), new TerminalColorScoped(43, 103)),
 
 	/**
-	 * <p style="color: #3890D0">Dark</p>
-	 * <p style="color: #24B2FD">Bright</p>
+	 * <b style="color: #3890D0">Dark</b>,
+	 * <b style="color: #24B2FD">Bright</b>
 	 */
 	BLUE(new TerminalColorScoped(34, 94), new TerminalColorScoped(44, 104)),
 
 	/**
-	 * <p style="color: #A374C0">Dark</p>
-	 * <p style="color: #E57FEB">Bright</p>
+	 * <b style="color: #A374C0">Dark</b>,
+	 * <b style="color: #E57FEB">Bright</b>
 	 */
 	MAGENTA(new TerminalColorScoped(35, 95), new TerminalColorScoped(45, 105)),
 
 	/**
-	 * <p style="color: #08A6A7">Dark</p>
-	 * <p style="color: #02DCDE">Bright</p>
+	 * <b style="color: #08A6A7">Dark</b>,
+	 * <b style="color: #02DCDE">Bright</b>
 	 */
 	CYAN(new TerminalColorScoped(36, 96), new TerminalColorScoped(46, 106)),
 
 	/**
-	 * <p style="color: #7B7C7E">Dark</p>
-	 * <p style="color: #F5F6F7">Bright</p>
+	 * <b style="color: #7B7C7E">Dark</b>,
+	 * <b style="color: #F5F6F7">Bright</b>
 	 */
 	WHITE(new TerminalColorScoped(37, 97), new TerminalColorScoped(47, 107)),
 

@@ -7,8 +7,13 @@ module sirius.stellar.platform {
 
 	requires transitive io.avaje.inject;
 	requires transitive io.avaje.jsonb;
+	requires transitive io.avaje.jsonb.plugin;
 
 	requires java.management;
 
-	//	provides io.avaje.inject.spi.Module with sirius.stellar.platform.PlatformModule;
+	exports sirius.stellar.platform;
+	exports sirius.stellar.platform.jsonb;
+
+	provides io.avaje.inject.spi.InjectExtension with sirius.stellar.platform.PlatformModule;
+	provides io.avaje.jsonb.spi.JsonbExtension with sirius.stellar.platform.jsonb.GeneratedJsonComponent;
 }
