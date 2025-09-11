@@ -16,8 +16,9 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  * Conceptually, this system works similarly to <em>arena allocation</em> strategies where resources
  * are grouped into a managed arena, and it is collectively torn down at the end of lifetime.
  * <p>
- * If any resource throws an exception on closing, the first exception is rethrown, and subsequent
- * exceptions are added to it as suppressed exceptions, preserving the full closure context.
+ * If any resource throws an exception on closing, the first exception is rethrown (and wrapped as a
+ * {@link RuntimeException}, preventing unspecific catch blocks), and subsequent exceptions are added
+ * to it as suppressed exceptions, preserving the full closure context.
  *
  * @author Mechite
  * @since 1u1
@@ -61,22 +62,24 @@ public record Closer(Deque<AutoCloseable> stack) implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
-		Exception first = null;
+	public void close() {
+		RuntimeException exception = null;
+
 		while (!this.stack.isEmpty() && !Thread.currentThread().isInterrupted()) {
 			try {
 				AutoCloseable current = this.stack.pollFirst();
 				if (current == null) continue;
 				current.close();
-			} catch (Exception current) {
-				if (first != null) {
-					first.addSuppressed(current);
+			} catch (Throwable current) {
+				if (exception != null) {
+					exception.addSuppressed(current);
 					continue;
 				}
-				first = current;
+				exception = new RuntimeException(current);
 			}
 		}
-		if (first == null) return;
-		throw first;
+
+		if (exception == null) return;
+		throw exception;
 	}
 }
